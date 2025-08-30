@@ -1,0 +1,24 @@
+{
+  "originHash" : "6d0692e8019fac00fd7b085c55ecc6f118df1485ec914b03a0921f08bdfc639a",
+  "pins" : [
+    {
+      "identity" : "support",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zuhlke/Support.git",
+      "state" : {
+        "revision" : "be875222b9721dd480d48e1c0649787fffc3c1a7",
+        "version" : "4.0.0"
+      }
+    },
+    {
+      "identity" : "swift-http-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-http-types.git",
+      "state" : {
+        "revision" : "a0a57e949a8903563aba4615869310c0ebf14c03",
+        "version" : "1.4.0"
+      }
+    }
+  ],
+  "version" : 3
+}
