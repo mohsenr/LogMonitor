@@ -8,13 +8,15 @@ public actor OSLogMonitor {
     
     let appLaunchDate: Date
     let logStore = try! OSLogStore(scope: .currentProcessIdentifier)
-    let modelContainer = try! ModelContainer(
-        for: AppRun.self,
-        configurations: ModelConfiguration(url: URL.libraryDirectory.appending(component: "Logs.db"))
-    )
+    let modelContainer: ModelContainer
     
-    public init(appLaunchDate: Date = .now) {
+    public init(url: URL, appLaunchDate: Date = .now) throws {
         self.appLaunchDate = appLaunchDate
+        
+        modelContainer = try ModelContainer(
+            for: AppRun.self,
+            configurations: ModelConfiguration(url: url)
+        )
         Task.detached(name: "Log Monitor") {
             await self.monitorOSLog()
         }
@@ -45,8 +47,6 @@ public actor OSLogMonitor {
             }
             
             lastDate = modelEntries.last?.date ?? lastDate
-            print(Date.now, "–", modelEntries.count, "entries until", lastDate)
-            
             try? await Task.sleep(for: .seconds(1))
         }
     }
