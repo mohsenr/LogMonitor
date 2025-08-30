@@ -2,7 +2,6 @@ import Foundation
 import OSLog
 import Support
 import SwiftData
-import UIKit
 
 public actor OSLogMonitor {
     
@@ -27,9 +26,9 @@ public actor OSLogMonitor {
                 
         let appRun = await AppRun(
             appVersion: Bundle.main.infoDictionary!["CFBundleVersion"] as! String,
-            operatingSystemVersion: UIDevice.current.systemVersion,
+            operatingSystemVersion: ProcessInfo.processInfo.operatingSystemVersionString,
             launchDate: appLaunchDate,
-            device: UIDevice.current.modelName
+            device: deviceModel()
         )
         context.insert(appRun)
         try! context.save()
@@ -211,19 +210,6 @@ extension ModelContext {
     
 }
 
-extension UIDevice {
-    var modelName: String {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        let identifier = machineMirror.children.reduce("") { identifier, element in
-            guard let value = element.value as? Int8, value != 0 else { return identifier }
-            return identifier + String(UnicodeScalar(UInt8(value)))
-        }
-        return identifier
-    }
-}
-
 private extension OSLogEntryLog.Level {
     var exportDescription: String {
         switch self {
@@ -248,4 +234,15 @@ private extension OSLogEntrySignpost.SignpostType {
         @unknown default: "unknown: \(rawValue)"
         }
     }
+}
+
+private func deviceModel() -> String {
+    var systemInfo = utsname()
+    uname(&systemInfo)
+    let machineMirror = Mirror(reflecting: systemInfo.machine)
+    let identifier = machineMirror.children.reduce("") { identifier, element in
+        guard let value = element.value as? Int8, value != 0 else { return identifier }
+        return identifier + String(UnicodeScalar(UInt8(value)))
+    }
+    return identifier
 }
