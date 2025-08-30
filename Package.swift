@@ -22,7 +22,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "LogMonitor"
+            name: "LogMonitor",
+            dependencies: [
+                "Support",
+            ]
         ),
     ]
 )
