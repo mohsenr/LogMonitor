@@ -50,25 +50,7 @@ extension LogStorageConvention {
     )
 }
 
-public extension OSLogMonitor {
-    
-    init(convention: LogStorageConvention, appLaunchDate: Date = .now) throws {
-        let fileManager = FileManager()
-        
-        let logFile = try fileManager.url(for: convention.baseStorageLocation)
-            .appending(components: convention.basePathComponents)
-            .appending(groupingComponentsFor: convention.executableTargetGroupingStrategy)
-            .appending(logFilePathComponentsFor: convention.executableTargetLogFileNamingStrategy, bundleIdentifier: Bundle.main.bundleIdentifier!)
-        
-        let logDirectory = logFile.deletingLastPathComponent()
-        try? fileManager.createDirectory(at: logDirectory, withIntermediateDirectories: true)
-        
-        try self.init(url: logFile, appLaunchDate: appLaunchDate)
-    }
-    
-}
-
-private extension FileManager {
+extension FileManager {
     
     func url(for storageLocation: LogStorageConvention.BaseStorageLocation) throws -> URL {
         switch storageLocation {
@@ -82,7 +64,7 @@ private extension FileManager {
     
 }
 
-private extension URL {
+extension URL {
     
     func appending(components: [String]) -> URL {
         components.reduce(self) { $0.appending(component: $1, directoryHint: .isDirectory) }

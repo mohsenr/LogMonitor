@@ -66,6 +66,24 @@ public actor OSLogMonitor {
     
 }
 
+public extension OSLogMonitor {
+    
+    init(convention: LogStorageConvention, appLaunchDate: Date = .now) throws {
+        let fileManager = FileManager()
+        
+        let logFile = try fileManager.url(for: convention.baseStorageLocation)
+            .appending(components: convention.basePathComponents)
+            .appending(groupingComponentsFor: convention.executableTargetGroupingStrategy)
+            .appending(logFilePathComponentsFor: convention.executableTargetLogFileNamingStrategy, bundleIdentifier: Bundle.main.bundleIdentifier!)
+        
+        let logDirectory = logFile.deletingLastPathComponent()
+        try? fileManager.createDirectory(at: logDirectory, withIntermediateDirectories: true)
+        
+        try self.init(url: logFile, appLaunchDate: appLaunchDate)
+    }
+    
+}
+
 struct Logs: Codable {
     var runs: [AppRun.Snapshot]
 }
